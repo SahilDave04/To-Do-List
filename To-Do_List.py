@@ -9,10 +9,9 @@ class mainwindow(QMainWindow):
     def __init__(self):
         super().__init__()
         uic.loadUi("TDL.ui", self)
-        self.setWindowIcon(QtGui.QIcon('icon.jpg'))
         self.setWindowTitle("To-Do List")
-        self.setFixedHeight(1010)
-        self.setFixedWidth(600)
+        #self.setFixedHeight(1010)
+        #self.setFixedWidth(600)
 
         self.task_input = self.findChild(QLineEdit, "task_in")
         self.due_in = self.findChild(QLineEdit,"due")
@@ -23,7 +22,7 @@ class mainwindow(QMainWindow):
 
         self.warning.setHidden(True)
 
-        con = mdb.connect(host="localhost", user="root", passwd="drumStick_4011", database="tdl", auth_plugin='mysql_native_password')
+        con = mdb.connect(host="localhost", user="root", passwd= "your password", database="database name",auth_plugin='mysql_native_password')
         curs = con.cursor()
         q = f"select task,due_in from p_tasks"
         curs.execute(q)
@@ -48,16 +47,16 @@ class mainwindow(QMainWindow):
                 for l in range(columns):
                     tup = result[k]
                     self.out.setItem(k, l, QTableWidgetItem(str(tup[l])))
-                    self.out.setColumnWidth(300, 300)
+                    self.out.setColumnWidth(700, 300)
 
         self.finish.clicked.connect(self.deletion)
         self.add.clicked.connect(self.adding)
-        self.show()
+        self.showMaximized()
 
     def deletion(self):
         m = self.out.currentRow()
         print("m"+str(m))
-        con = mdb.connect(host="localhost", user="root", passwd="drumStick_4011", database="tdl",auth_plugin='mysql_native_password')
+        con = mdb.connect(host="localhost", user="root", passwd= "your password", database="database name",auth_plugin='mysql_native_password')
         curs = con.cursor()
         q = f"delete from p_tasks where sr_no = '{m+1}'"
         curs.execute(q)
@@ -93,7 +92,7 @@ class mainwindow(QMainWindow):
                 for l in range(columns):
                     tup = result[k]
                     self.out.setItem(k, l, QTableWidgetItem(str(tup[l])))
-                    self.out.setColumnWidth(300, 300)
+                    self.out.setColumnWidth(700, 300)
 
     def adding(self):
         t_inptt = self.task_input.text()
@@ -112,7 +111,7 @@ class mainwindow(QMainWindow):
             self.warning.setHidden(False)
         else:
             self.warning.setHidden(True)
-            con = mdb.connect(host="localhost", user="root", passwd="drumStick_4011", database="tdl",auth_plugin='mysql_native_password')
+            con = mdb.connect(host="localhost", user="root", passwd= "your password", database="database name",auth_plugin='mysql_native_password')
             curs = con.cursor()
             q = f"insert into p_tasks(task,due_in) values('{t_inptt}','{d_inptt}')"
             curs.execute(q)
@@ -134,7 +133,7 @@ class mainwindow(QMainWindow):
                 for l in range(columns):
                     tup = result[k]
                     self.out.setItem(k, l, QTableWidgetItem(str(tup[l])))
-                    self.out.setColumnWidth(300, 300)
+                    self.out.setColumnWidth(700, 300)
 
 app = QApplication(sys.argv)
 UIWindow = mainwindow()
