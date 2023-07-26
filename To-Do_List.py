@@ -26,7 +26,7 @@ class mainwindow(QMainWindow):
         self.lst_vw = self.findChild(QListWidget,"task_out")
         self.st = 0
         self.task_input.setPlaceholderText("Task")
-        con = mdb.connect(host="localhost", user="root", passwd="drumStick_4011", database="tdl", auth_plugin='mysql_native_password')
+        con = mdb.connect(host="localhost", user="root", passwd="password", database="database name", auth_plugin='mysql_native_password')
         curs = con.cursor()
         q = f"select task,due_in from p_tasks"
         curs.execute(q)
@@ -87,7 +87,7 @@ class mainwindow(QMainWindow):
     def deletion(self):
         m = self.lst_vw.currentRow()
     
-        con = mdb.connect(host="localhost", user="root", passwd="drumStick_4011", database="tdl",auth_plugin='mysql_native_password')
+        con = mdb.connect(host="localhost", user="root", passwd="password", database="database name",auth_plugin='mysql_native_password')
         curs = con.cursor()
         q = f"delete from p_tasks where sr_no = '{m+1}'"
         curs.execute(q)
@@ -116,7 +116,7 @@ class mainwindow(QMainWindow):
     def adding(self):
         t_inptt = self.task_input.text()
         self.task_input.clear()
-        con = mdb.connect(host="localhost", user="root", passwd="drumStick_4011", database="tdl",auth_plugin='mysql_native_password')
+        con = mdb.connect(host="localhost", user="root", passwd="password", database="database name",auth_plugin='mysql_native_password')
         curs = con.cursor()
         if t_inptt != "":
             self.task_input.setPlaceholderText("Task")
