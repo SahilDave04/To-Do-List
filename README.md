@@ -22,7 +22,6 @@ New features in To-Do List 2.0 :
 # Prerequisites
 These are the libraries needed to use this application:
 <li>PyQT5</li>
-<li>sys</li>
 <li>mysql.connector</li>
 <li>pywin32</li>
 <li>MySQL</li>
