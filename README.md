@@ -26,6 +26,6 @@ These are the libraries needed to use this application:
 <li>mysql.connector</li>
 <li>win32gui</li>
 <li>MySQL</li>
-To download MySQL (for Windows) -->  <a href = https://dev.mysql.com/downloads/installer>Click here
+To download MySQL (for Windows) -->  <a href = https://dev.mysql.com/downloads/installer>Click here</a>
 
-To download others libraries run -->  
+To download the others libraries run -->  
