@@ -24,7 +24,7 @@ These are the libraries needed to use this application:
 <li>PyQT5</li>
 <li>sys</li>
 <li>mysql.connector</li>
-<li>win32gui</li>
+<li>pywin32</li>
 <li>MySQL</li>
 To download MySQL (for Windows) -->  <a href = https://dev.mysql.com/downloads/installer>Click here</a>
 
