@@ -232,7 +232,6 @@ class mainwindow(QMainWindow):
         else:
             self.task_input.setPlaceholderText("Invalid")
 
-
 app = QApplication(sys.argv)
 UIWindow = mainwindow()
 app.exec_()
