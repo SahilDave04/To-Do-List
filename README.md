@@ -18,3 +18,13 @@ A To-Do List made with Python and MySQL
 New features in To-Do List 2.0 :
 <li>Task Description window</li>
 <li>Removed spotlight for first task.</li>
+
+# Prerequisites
+These are the libraries needed to use this application:
+<li>PyQT5</li>
+<li>sys</li>
+<li>mysql.connector</li>
+<li>win32gui</li>
+<li>MySQL</li>
+To download MySQL (for Windows) -->  <a href = https://dev.mysql.com/downloads/installer>Click here
+To download others libraries run -->  
