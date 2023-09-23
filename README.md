@@ -3,16 +3,15 @@ A To-Do List made with Python and MySQL
 
 <b>Collapsed form </b>
 
-<img src="https://github.com/SahilDave04/To-Do-List/assets/93636117/d1c6e5b1-d71b-4378-860d-771570e0b6cb" width="450" height="60">
-
+<img src="https://github.com/SahilDave04/To-Do-List/assets/93636117/0c950937-1502-475b-928a-c3b5fa40b5a6" width="450" height="60">
 
 <b>Expanded form </b>
 
-<img src="https://github.com/SahilDave04/To-Do-List/assets/93636117/64121f3c-ea8b-472b-96d1-7df5b3de8bd8" width="450">
+<img src="https://github.com/SahilDave04/To-Do-List/assets/93636117/c00c29c7-ce79-4f50-9824-769d011f8123" width="450">
 
 <b>Expanded form with Task Description </b>
 
-<img src="https://github.com/SahilDave04/To-Do-List/assets/93636117/82ac2882-d166-497a-935c-ee04193d66a0" width="900">
+<img src="https://github.com/SahilDave04/To-Do-List/assets/93636117/6007980a-e85c-4eda-98ae-827f8fdbfa9d" width="900">
 
 # Updates
 New features in To-Do List 2.0 :
@@ -26,6 +25,6 @@ These are the libraries needed to use this application:
 <li>mysql.connector</li>
 <li>win32gui</li>
 <li>MySQL</li>
-To download MySQL (for Windows) -->  <a href = https://dev.mysql.com/downloads/installer>Click here
+To download MySQL (for Windows) -->  <a href = https://dev.mysql.com/downloads/installer>Click here</a>
 
-To download others libraries run -->  
+To download others libraries run -->  <a href = https://github.com/SahilDave04/To-Do-List/blob/main/libs.py>libs.py</a>
