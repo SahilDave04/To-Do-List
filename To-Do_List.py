@@ -4,7 +4,6 @@ from PyQt5.QtCore import Qt, QPoint
 from PyQt5.QtGui import QStandardItemModel, QStandardItem
 import sys
 from PyQt5 import uic
-import sys
 import mysql.connector as mdb
 from win32gui import *
 
@@ -17,20 +16,31 @@ class views(QWidget):
 
         self.main_con = self.findChild(QTextEdit,"main_con")
         self.main_title = self.findChild(QLabel,"main_title")
-        con = mdb.connect(host="localhost", user="root", passwd="", database="tdl2", auth_plugin='mysql_native_password')
-        curs = con.cursor()
+        self.collapse = self.findChild(QPushButton,"collapse")
+        self.n = 0
+        self.collapse.clicked.connect(self.cls)
+        
     
-    def added(self,text,text1):
+    def added(self,text,text1,m):
         self.main_con.setPlainText(text)
         self.main_title.setText(text1)
-
-    def add2(self,text):
-        self.add_tsk.setHidden(False)
-        self.main_title.setText(text)
-
-    def get_val(self):
-        txt = self.main_con.toPlainText()
-        return txt
+        self.n = m
+    
+    def cls(self):
+        con = mdb.connect(host="localhost", user="root", passwd="drumStick_4011", database="tdl2", auth_plugin='mysql_native_password')
+        curs = con.cursor()
+        q = f"select task_name,task_cont from tasks where sr_no = '{self.n+1}'"
+        curs.execute(q)
+        result = curs.fetchall()
+        value = result[0][1]
+        self.pt = 1
+        if value != self.main_con.toPlainText():
+            q = f"update tasks set task_cont = '{self.main_con.toPlainText()}' where sr_no = '{self.n+1}';"
+            curs.execute(q)
+            con.commit()
+        else:
+            pass
+        self.close()
 
 class mainwindow(QMainWindow):
     def __init__(self):
@@ -49,13 +59,11 @@ class mainwindow(QMainWindow):
         self.add = self.findChild(QPushButton, "add")
         self.finish = self.findChild(QPushButton, "sub")
         self.lst_vw = self.findChild(QListWidget,"task_out")
-        self.view = self.findChild(QPushButton,"view")
         self.warning = self.findChild(QLabel,"warning")
         self.warning.setHidden(True)
-        self.st = 1
-        self.pt = 1
+        self.st = 0
         self.task_input.setPlaceholderText("Task")
-        con = mdb.connect(host="localhost", user="root", passwd="", database="tdl2", auth_plugin='mysql_native_password')
+        con = mdb.connect(host="localhost", user="root", passwd="drumStick_4011", database="tdl2", auth_plugin='mysql_native_password')
         curs = con.cursor()
         q = f"select task_name,task_cont from tasks"
         curs.execute(q)
@@ -74,7 +82,7 @@ class mainwindow(QMainWindow):
         self.finish.clicked.connect(self.deletion)
         self.add.clicked.connect(self.adding)
         self.exp.clicked.connect(self.cl)
-        self.view.clicked.connect(self.pl)
+        self.lst_vw.currentRowChanged.connect(self.pl)
         self.oldPos = self.pos()
         self.w = views()
         self.show()
@@ -83,7 +91,7 @@ class mainwindow(QMainWindow):
         self.close()
         self.w.close()
 
-    #To-Do List function
+    #To-Do List functions
     def cl(self):
         #full size
         if self.st == 0:
@@ -100,56 +108,33 @@ class mainwindow(QMainWindow):
             self.st = 0
             self.exp.setText("<")
             self.w.close()
-    
+        
     #Task Description
     def pl(self):
-        self.view.setFixedSize(31,381)
-        self.lst_vw.setFixedSize(421,381)
+        self.lst_vw.setFixedSize(461,381)
         self.warning.setHidden(True)
         self.m = self.lst_vw.currentRow()
         #full size
-        if self.pt == 1:
-            if self.m != -1:
+        if self.m != -1:
                 self.w.show()
                 x = self.x()
                 y = self.y()
                 self.pt = 0
                 self.n_x = QPoint(x+490,y)
                 self.w.move(self.n_x.x(),self.n_x.y())
-                self.view.setText("S\nA\nV\nE\n \nA\nN\nD\n \nC\nL\nO\nS\nE")
-                con = mdb.connect(host="localhost", user="root", passwd="", database="tdl2",auth_plugin='mysql_native_password')
+                con = mdb.connect(host="localhost", user="root", passwd="drumStick_4011", database="tdl2",auth_plugin='mysql_native_password')
                 curs = con.cursor()
                 q = f"select task_name,task_cont from tasks where sr_no = '{self.m+1}'"
                 curs.execute(q)
                 result = curs.fetchall()
                 value = result[0][1]
                 value1 = result[0][0]
-                self.w.added(value,value1)
-                #print(value,value1)
-            else:
-                self.view.setFixedSize(31,361)
-                self.lst_vw.setFixedSize(421,361)
-                self.warning.setHidden(False)
-                print("problem")
-
-        #collapsed
+                self.w.added(value,value1,self.m)
         else:
-            self.view.setText("S\nH\nO\nW")
-            con = mdb.connect(host="localhost", user="root", passwd="", database="tdl2",auth_plugin='mysql_native_password')
-            curs = con.cursor()
-            q = f"select task_name,task_cont from tasks where sr_no = '{self.m+1}'"
-            curs.execute(q)
-            result = curs.fetchall()
-            value = result[0][1]
-            self.pt = 1
-            #print(self.w.get_val())
-            if value != self.w.get_val():
-                q = f"update tasks set task_cont = '{self.w.get_val()}' where sr_no = '{self.m+1}';"
-                curs.execute(q)
-                con.commit()
-            else:
-                pass
-            self.w.close()
+            self.lst_vw.setFixedSize(461,361)
+            self.warning.setHidden(False)
+            print("problem")
+        
 
     def center(self):
         qr = self.frameGeometry()
@@ -173,13 +158,11 @@ class mainwindow(QMainWindow):
 
     def deletion(self):
         self.w.close()
-        self.view.setText("S\nH\nO\nW")
-        self.view.setFixedSize(31,381)
         self.lst_vw.setFixedSize(421,381)
         self.warning.setHidden(True)
         self.m = self.lst_vw.currentRow()
     
-        con = mdb.connect(host="localhost", user="root", passwd="", database="tdl2",auth_plugin='mysql_native_password')
+        con = mdb.connect(host="localhost", user="root", passwd="drumStick_4011", database="tdl2",auth_plugin='mysql_native_password')
         curs = con.cursor()
         q = f"delete from tasks where sr_no = '{self.m+1}'"
         curs.execute(q)
@@ -206,12 +189,11 @@ class mainwindow(QMainWindow):
                 self.lst_vw.addItem(tup[0])
 
     def adding(self):
-        self.view.setFixedSize(31,381)
         self.lst_vw.setFixedSize(421,381)
         self.warning.setHidden(True)
         t_inptt = self.task_input.text()
         self.task_input.clear()
-        con = mdb.connect(host="localhost", user="root", passwd="", database="tdl2",auth_plugin='mysql_native_password')
+        con = mdb.connect(host="localhost", user="root", passwd="drumStick_4011", database="tdl2",auth_plugin='mysql_native_password')
         curs = con.cursor()
         if t_inptt != "":
             self.task_input.setPlaceholderText("Task")
@@ -228,7 +210,6 @@ class mainwindow(QMainWindow):
             for k in range(rows):
                 tup = result[k]
                 self.lst_vw.addItem(tup[0])
-            
         else:
             self.task_input.setPlaceholderText("Invalid")
 
