@@ -27,7 +27,7 @@ class views(QWidget):
         self.n = m
     
     def cls(self):
-        con = mdb.connect(host="localhost", user="root", passwd="drumStick_4011", database="tdl2", auth_plugin='mysql_native_password')
+        con = mdb.connect(host="localhost", user="root", passwd="", database="tdl2", auth_plugin='mysql_native_password')
         curs = con.cursor()
         q = f"select task_name,task_cont from tasks where sr_no = '{self.n+1}'"
         curs.execute(q)
@@ -63,7 +63,7 @@ class mainwindow(QMainWindow):
         self.warning.setHidden(True)
         self.st = 0
         self.task_input.setPlaceholderText("Task")
-        con = mdb.connect(host="localhost", user="root", passwd="drumStick_4011", database="tdl2", auth_plugin='mysql_native_password')
+        con = mdb.connect(host="localhost", user="root", passwd="", database="tdl2", auth_plugin='mysql_native_password')
         curs = con.cursor()
         q = f"select task_name,task_cont from tasks"
         curs.execute(q)
@@ -122,7 +122,7 @@ class mainwindow(QMainWindow):
                 self.pt = 0
                 self.n_x = QPoint(x+490,y)
                 self.w.move(self.n_x.x(),self.n_x.y())
-                con = mdb.connect(host="localhost", user="root", passwd="drumStick_4011", database="tdl2",auth_plugin='mysql_native_password')
+                con = mdb.connect(host="localhost", user="root", passwd="", database="tdl2",auth_plugin='mysql_native_password')
                 curs = con.cursor()
                 q = f"select task_name,task_cont from tasks where sr_no = '{self.m+1}'"
                 curs.execute(q)
@@ -162,7 +162,7 @@ class mainwindow(QMainWindow):
         self.warning.setHidden(True)
         self.m = self.lst_vw.currentRow()
     
-        con = mdb.connect(host="localhost", user="root", passwd="drumStick_4011", database="tdl2",auth_plugin='mysql_native_password')
+        con = mdb.connect(host="localhost", user="root", passwd="", database="tdl2",auth_plugin='mysql_native_password')
         curs = con.cursor()
         q = f"delete from tasks where sr_no = '{self.m+1}'"
         curs.execute(q)
@@ -193,7 +193,7 @@ class mainwindow(QMainWindow):
         self.warning.setHidden(True)
         t_inptt = self.task_input.text()
         self.task_input.clear()
-        con = mdb.connect(host="localhost", user="root", passwd="drumStick_4011", database="tdl2",auth_plugin='mysql_native_password')
+        con = mdb.connect(host="localhost", user="root", passwd="", database="tdl2",auth_plugin='mysql_native_password')
         curs = con.cursor()
         if t_inptt != "":
             self.task_input.setPlaceholderText("Task")
