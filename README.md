@@ -27,4 +27,4 @@ These are the libraries needed to use this application:
 <li>MySQL</li>
 To download MySQL (for Windows) -->  <a href = https://dev.mysql.com/downloads/installer>Click here</a>
 
-To download others libraries run -->  <a href = https://github.com/SahilDave04/To-Do-List/blob/main/libs.py>libs.py</a>
+To download others libraries run -->  libs.py
