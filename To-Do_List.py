@@ -19,7 +19,9 @@ class views(QWidget):
         self.collapse = self.findChild(QPushButton,"collapse")
         self.n = 0
         self.collapse.clicked.connect(self.cls)
-        
+        self.con = mdb.connect(host="localhost", user="root", passwd="drumStick_4011", database="tdl2", auth_plugin='mysql_native_password')
+        self.curs = self.con.cursor()
+
     
     def added(self,text,text1,m):
         self.main_con.setPlainText(text)
@@ -27,17 +29,15 @@ class views(QWidget):
         self.n = m
     
     def cls(self):
-        con = mdb.connect(host="localhost", user="root", passwd="", database="tdl2", auth_plugin='mysql_native_password')
-        curs = con.cursor()
         q = f"select task_name,task_cont from tasks where sr_no = '{self.n+1}'"
-        curs.execute(q)
-        result = curs.fetchall()
+        self.curs.execute(q)
+        result = self.curs.fetchall()
         value = result[0][1]
         self.pt = 1
         if value != self.main_con.toPlainText():
             q = f"update tasks set task_cont = '{self.main_con.toPlainText()}' where sr_no = '{self.n+1}';"
-            curs.execute(q)
-            con.commit()
+            self.curs.execute(q)
+            self.con.commit()
         else:
             pass
         self.close()
@@ -62,12 +62,13 @@ class mainwindow(QMainWindow):
         self.warning = self.findChild(QLabel,"warning")
         self.warning.setHidden(True)
         self.st = 0
+        self.swt = 0
         self.task_input.setPlaceholderText("Task")
-        con = mdb.connect(host="localhost", user="root", passwd="", database="tdl2", auth_plugin='mysql_native_password')
-        curs = con.cursor()
+        self.con = mdb.connect(host="localhost", user="root", passwd="drumStick_4011", database="tdl2", auth_plugin='mysql_native_password')
+        self.curs = self.con.cursor()
         q = f"select task_name,task_cont from tasks"
-        curs.execute(q)
-        result = curs.fetchall()
+        self.curs.execute(q)
+        result = self.curs.fetchall()
         if result == []:
             self.lst_vw.addItem("No Tasks")
         else:
@@ -82,7 +83,7 @@ class mainwindow(QMainWindow):
         self.finish.clicked.connect(self.deletion)
         self.add.clicked.connect(self.adding)
         self.exp.clicked.connect(self.cl)
-        self.lst_vw.currentRowChanged.connect(self.pl)
+        self.lst_vw.itemClicked.connect(self.pl)
         self.oldPos = self.pos()
         self.w = views()
         self.show()
@@ -110,30 +111,42 @@ class mainwindow(QMainWindow):
             self.w.close()
         
     #Task Description
-    def pl(self):
+    def pl(self,l):
         self.lst_vw.setFixedSize(461,381)
         self.warning.setHidden(True)
-        self.m = self.lst_vw.currentRow()
         #full size
-        if self.m != -1:
-                self.w.show()
-                x = self.x()
-                y = self.y()
-                self.pt = 0
-                self.n_x = QPoint(x+490,y)
-                self.w.move(self.n_x.x(),self.n_x.y())
-                con = mdb.connect(host="localhost", user="root", passwd="", database="tdl2",auth_plugin='mysql_native_password')
-                curs = con.cursor()
+        #This checks to see of the window is closed and opens it
+        if self.swt == 0:
+            self.swt = 1
+            self.m = self.lst_vw.currentRow()
+            self.w.show()
+            x = self.x()
+            y = self.y()
+            self.pt = 0
+            self.n_x = QPoint(x+490,y)
+            self.w.move(self.n_x.x(),self.n_x.y())
+            q = f"select task_name,task_cont from tasks where sr_no = '{self.m+1}'"
+            self.curs.execute(q)
+            result = self.curs.fetchall()
+            print(result)
+            value = result[0][1]
+            value1 = result[0][0]
+            self.w.added(value,value1,self.m)
+        #This case is for when the window is already open
+        else:
+            #When the same item is clicked again, results in closing of the window
+            if l == self.lst_vw.item(self.m):
+                self.swt = 0
+                self.w.close()
+            #When a different item is clicked, result in display of the information of the selected item
+            else:
+                self.m = self.lst_vw.currentRow()
                 q = f"select task_name,task_cont from tasks where sr_no = '{self.m+1}'"
-                curs.execute(q)
-                result = curs.fetchall()
+                self.curs.execute(q)
+                result = self.curs.fetchall()
                 value = result[0][1]
                 value1 = result[0][0]
-                self.w.added(value,value1,self.m)
-        else:
-            self.lst_vw.setFixedSize(461,361)
-            self.warning.setHidden(False)
-            print("problem")
+                self.w.added(value,value1,self.m)          
         
 
     def center(self):
@@ -158,26 +171,23 @@ class mainwindow(QMainWindow):
 
     def deletion(self):
         self.w.close()
-        self.lst_vw.setFixedSize(421,381)
+        self.lst_vw.setFixedSize(461,381)
         self.warning.setHidden(True)
         self.m = self.lst_vw.currentRow()
-    
-        con = mdb.connect(host="localhost", user="root", passwd="", database="tdl2",auth_plugin='mysql_native_password')
-        curs = con.cursor()
         q = f"delete from tasks where sr_no = '{self.m+1}'"
-        curs.execute(q)
-        con.commit()
+        self.curs.execute(q)
+        self.con.commit()
 
         strai = ["set @num :=0", "update tasks set sr_no = @num :=(@num+1);", "alter table tasks auto_increment=1;"]
         for i in strai:
             q = i
-            curs.execute(q)
-            con.commit()
+            self.curs.execute(q)
+            self.con.commit()
 
         self.lst_vw.clear()
         q = f"select task_name from tasks"
-        curs.execute(q)
-        result = curs.fetchall()
+        self.curs.execute(q)
+        result = self.curs.fetchall()
         if result == []:
             self.lst_vw.addItem("No Tasks")
         else:
@@ -187,31 +197,37 @@ class mainwindow(QMainWindow):
             for k in range(rows):
                 tup = result[k]
                 self.lst_vw.addItem(tup[0])
+        self.swt = 0
 
     def adding(self):
-        self.lst_vw.setFixedSize(421,381)
+        self.lst_vw.setFixedSize(461,381)
         self.warning.setHidden(True)
         t_inptt = self.task_input.text()
         self.task_input.clear()
-        con = mdb.connect(host="localhost", user="root", passwd="", database="tdl2",auth_plugin='mysql_native_password')
-        curs = con.cursor()
+        self.curs = self.con.cursor()
         if t_inptt != "":
             self.task_input.setPlaceholderText("Task")
             q = f"insert into tasks(task_name,task_cont) values('{t_inptt}','')"
-            curs.execute(q)
-            con.commit()
+            self.curs.execute(q)
+            self.con.commit()
             self.lst_vw.clear()
             q = f"select task_name from tasks"
-            curs.execute(q)
-            result = curs.fetchall()
+            self.curs.execute(q)
+            result = self.curs.fetchall()
             rows = len(result)
             ele = result[0]
             columns = (len(ele))
             for k in range(rows):
                 tup = result[k]
                 self.lst_vw.addItem(tup[0])
+            strai = ["set @num :=0", "update tasks set sr_no = @num :=(@num+1);", "alter table tasks auto_increment=1;"]
+            for i in strai:
+                q = i
+                self.curs.execute(q)
+                self.con.commit()
         else:
             self.task_input.setPlaceholderText("Invalid")
+
 
 app = QApplication(sys.argv)
 UIWindow = mainwindow()
